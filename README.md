@@ -51,24 +51,60 @@ The below scipt is an example of how a user could initialise a `log instance` fo
 const log = logger.start('start function', 'Room_Setup', 'Rooms_Setup', 'server')
 ```
 
-Log instances should be created in each function you wish to visualise later.
+<img src="./images/start.png" alt="start" style="width:150px;"/>
 
-### Process
+Log instances should be created in each function you wish to visualise later.
 
 ### Database
 
+```
+log.database('log a database step')
+```
+
+<img src="./images/database.png" alt="database" style="width:150px;"/>
+
 ### Decision
+
+```
+log.decision('log a decision step')
+```
+
+<img src="./images/decision.png" alt="decision" style="width:150px;"/>
 
 ### Input/Output
 
+```
+log.input('log a input step')
+```
+
+```
+log.output('log a output step')
+```
+
+<img src="./images/input_output.png" alt="input_output" style="width:150px;"/>
+
 ### Process
+
+```
+log.process('log a process step')
+```
+
+<img src="./images/process.png" alt="process" style="width:150px;"/>
 
 ### End
 
+```
+log.end('log the end step')
+```
+
+<img src="./images/end.png" alt="end" style="width:150px;"/>
+
 ## Advanced Logging
+
+### Loops
 
 ### ParentLog
 
 ### Start Child
 
-### Start Loop
+### Orphans
