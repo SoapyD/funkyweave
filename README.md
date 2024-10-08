@@ -2,6 +2,7 @@
 <img src="./images/funkyweave.png" alt="Logo" style="width:200px;"/>
 </div>
 
+
 [TOC]
 
 # FunkyWeave
@@ -21,7 +22,7 @@ npm i funkyweave
 const { logger, visualiser } = require('funkyweave')
 ```
 
-## Logging
+## Basic Logging
 
 Logging is broken down into a number of simple steps
 
@@ -63,6 +64,8 @@ Log instances should be created in each function you wish to visualise later.
 ### Process
 
 ### End
+
+## Advanced Logging
 
 ### ParentLog
 
