@@ -1,0 +1,29 @@
+{
+  "name": "funkyweave",
+  "version": "1.0.0",
+  "description": "A logger that tracks and visualizes the interactions between functions, generating flow diagrams in DOT format for Graphviz.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoapyD/funkyweave.git"
+  },
+  "keywords": [
+    "function",
+    "graphviz",
+    "flow",
+    "draw",
+    "logic",
+    "funky",
+    "weave",
+    "funkyweave"
+  ],
+  "author": "Tom Cassady",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/SoapyD/funkyweave/issues"
+  },
+  "homepage": "https://github.com/SoapyD/funkyweave#readme"
+}
