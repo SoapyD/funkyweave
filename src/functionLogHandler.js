@@ -331,11 +331,10 @@ const FunctionLogHandler = class {
 
 	startChild = (log, description = '', source = '') => {
 		const options = {}
-		if (source) {
-			// options.source = source
-			log.logData.source = source
-		}
 		let logData = this.createChild(log.logData, options)
+		if (source) {
+			logData.source = source
+		}		
 		if (description) {
 			logData = this.log(logData, description, {}, 'oval', 'start')
 		}
