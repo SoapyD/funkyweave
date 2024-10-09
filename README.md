@@ -73,6 +73,8 @@ const log = startLog(
 )
 ```
 
+#### Example
+
 The below script is an example of how a user could initialise a `log instance` for use in a function:
 
 ```
@@ -113,6 +115,7 @@ log.database(
 	Orphan
 )
 ```
+#### Example
 
 Here's an example:
 
@@ -143,6 +146,7 @@ log.decision(
 	Orphan
 )
 ```
+#### Example
 
 Here's an example:
 
@@ -173,6 +177,7 @@ log.input(
 	Orphan
 )
 ```
+#### Example
 
 Here's an example:
 
@@ -203,6 +208,8 @@ log.output(
 	Orphan
 )
 ```
+#### Example
+
 Here's an example:
 
 ```
@@ -232,6 +239,7 @@ log.process(
 	Orphan
 )
 ```
+#### Example
 Here's an example:
 
 ```
@@ -260,7 +268,7 @@ log.end(
 	Orphan
 )
 ```
-
+#### Example
 Here's an example:
 
 ```
