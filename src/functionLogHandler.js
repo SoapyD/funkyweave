@@ -255,7 +255,12 @@ const FunctionLogHandler = class {
 				if (options.loopName) {
 					data.functionOverride = options.loopName
 				} else {
-					data.functionOverride = `${functionName}_Loop`
+					if (data.history.length > 0) {
+						const lastItem = data.history[data.history.length - 1].description
+						data.functionOverride = `${lastItem} Loop`
+					} else {
+						data.functionOverride = `${functionName} Loop`
+					}
 				}
 			}
 			if (data.functionOverride) {
@@ -331,11 +336,10 @@ const FunctionLogHandler = class {
 
 	startChild = (log, description = '', source = '') => {
 		const options = {}
-		if (source) {
-			// options.source = source
-			log.logData.source = source
-		}
 		let logData = this.createChild(log.logData, options)
+		if (source) {
+			logData.source = source
+		}		
 		if (description) {
 			logData = this.log(logData, description, {}, 'oval', 'start')
 		}

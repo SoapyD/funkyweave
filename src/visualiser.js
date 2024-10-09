@@ -214,10 +214,10 @@ const Visualiser = class {
 		const colour = this.getColour('#F1D3CE', options.colours, 'function', options.name)
 
 		const text = `
-		subgraph cluster_${options.name} {
+		subgraph cluster_${options.name.replace(/\s+/g, '_')} {
 			style=filled
 			color="${colour}"
-			label=${options.name}
+			label="${options.name}"
 
 			${descriptionsString}         	 
 		}    
@@ -232,12 +232,13 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#FBF6EA', options.colours, 'class', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}" 
-			label=${options.name}
+			label="${options.name}"
 			fontsize=14
 
 			${functionsString}          	 
@@ -253,12 +254,13 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'source', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}"
-			label=${options.name}
+			label="${options.name}"
 			fontsize=14
 
 			${classString}          	 
@@ -274,16 +276,17 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'flow', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}"
-			label=${options.name}
+			label="${options.name}"
 			fontsize=14
 
 			node [style=filled, fillcolor=white, shape=box]
-			node_${options.name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
+			node_${name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
 
 			${sourceString}          	 
 		}    
@@ -298,16 +301,17 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#BEA9DF', options.colours, 'group', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name} {
+		subgraph cluster_${name} {
 			style=filled
 			color="${colour}"
 			label=<<B>${options.name}</B>>
 			fontsize=20  
 
 			node [style=filled, fillcolor=white, shape=box]
-			node_${options.name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
+			node_${name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
 
 			${flowString}
 		}
@@ -315,7 +319,7 @@ const Visualiser = class {
 		return text
 	}
 
-	graphVizConvert = (sourceJson, links, parentLinks, fileJoins, nodeColours = {}) => {
+	graphVizConvert = (sourceJson, links, parentLinks, fileJoins, nodeColours = {}, rankdir = 'TB') => {
 		// loop through json and convert it to gv format
 		const groupList = []
 		// const startIds = []
@@ -378,7 +382,7 @@ const Visualiser = class {
 		gvString =
 		`
 		digraph G {
-			rankdir=TB
+			rankdir=${rankdir}
 			// ranksep=1.0
 			// nodesep=0.7
 			splines=ortho
@@ -493,14 +497,14 @@ const Visualiser = class {
 		return links
 	}
 
-	run = async (filename, fileType, colours) => {
+	run = async (filename, fileType, colours, rankdir = 'TB') => {
 		const [combinedData, combinedLinks, combinedParentLinks, fileJoins] = this.loadAndCombineJsonFiles()
 		const formattedJson = this.convertJsonStructure(combinedData)
 		this.saveFile(JSON.stringify(formattedJson, null, 2), 'formatted_json.json')
 		const links = this.getLinks(combinedLinks, formattedJson)
 		const parentLinks = this.getParentLinks(combinedParentLinks, formattedJson)
 
-		const gvString = this.graphVizConvert(formattedJson, links, parentLinks, fileJoins, colours)
+		const gvString = this.graphVizConvert(formattedJson, links, parentLinks, fileJoins, colours, rankdir)
 		this.saveFile(gvString, `${filename}.dot`)
 		this.saveGraphviz(`${filename}.dot`, fileType)
 	}
