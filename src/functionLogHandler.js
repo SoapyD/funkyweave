@@ -19,6 +19,22 @@ const Logger = class {
 		return `${hash.slice(0, 32)}.${extension}`
 	}
 
+	// getHashedFilenameClient = async (data, extension = 'txt') => {
+	// 	// Encode data into a Uint8Array
+	// 	const encoder = new TextEncoder()
+	// 	const dataBuffer = encoder.encode(data)
+
+	// 	// Generate a SHA-256 hash
+	// 	const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
+
+	// 	// Convert the hash buffer to a hex string
+	// 	const hashArray = Array.from(new Uint8Array(hashBuffer))
+	// 	const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('')
+
+	// 	// Slice to the first 32 characters
+	// 	return `${hashHex.slice(0, 32)}.${extension}`
+	// }
+
 	createOrphan = (description, options, shapeName, processType) => {
 		const log = this.logHandler.startChild(this)
 		log[processType](description, false, { stackDepth: 5 })
@@ -112,11 +128,34 @@ const Logger = class {
 	remoteLog = (socket, options) => {
 		this.save()
 	}
+
+	// remoteLog = async () => {
+	// 	const fileName = await this.getHashedFilename(JSON.stringify(this.logData), 'json')
+
+	// 	if (!this.logData.group || !this.logData.flow || !this.logData.description) {
+	// 		return
+	// 	}
+
+	// 	// check if hashed log has already been sent, if don't don't send it.
+	// 	if (this.logHandler.hashes.includes(fileName)) {
+	// 		return
+	// 	}
+	// 	this.logHandler.hashes.push(fileName)
+
+	// 	const returnOptions = {
+	// 		functionGroup: 'core',
+	// 		function: 'logFunction',
+	// 		id: roomData.core.roomName,
+	// 		log: this
+	// 	}
+	// 	messageServer(returnOptions)
+	// }	
 }
 
 const FunctionLogHandler = class {
 	constructor (options) {
 		this.maxLineWidth = 10
+		// this.hashes = []		
 	}
 
 	clearFolder = () => {
@@ -198,9 +237,6 @@ const FunctionLogHandler = class {
 
 	log = (logData, description, options, shapeName, processType) => {
 		try {
-			// if (options.orphan) {
-			// 	logData = this.createChild({ ...logData })
-			// }
 
 			let stackDepth = 3
 			if (options.stackDepth) {
@@ -218,6 +254,16 @@ const FunctionLogHandler = class {
 			if (functionName === '<anonymous>') {
 				functionName = 'no_named_function'
 			}
+			// CLIENT
+			// const error = new Error()
+			// const stack = error.stack.split('\n')
+			// const callerStackLine = stack[stackDepth].trim()
+			// const className = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
+			// let functionName = callerStackLine.split('@')[0]
+			// functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
+			// if (functionName === '<anonymous>') {
+			// 	functionName = 'no_named_function'
+			// }
 
 			let data = {
 				group: '',
