@@ -42,6 +42,7 @@ To initialise **FunkyWeave** `logging`, there are 4 required field and a set of 
 #### Function Definition
 
 Source: **funkyweave.logging**
+
 Name: **startLog**
 
 Parameters:
@@ -96,7 +97,10 @@ Every time a node is created, **FunkyWeave** will also extract the `file name` a
 
 Should be used when directly interacting with a database or other data source.
 
+#### Function Definition
+
 Source: **funkyweave.log**
+
 Name: **database**
 
 Parameters:
@@ -121,9 +125,12 @@ log.database('log a database step')
 
 ### Decision
 
-Should be used when detailing an if statement.
+A node that can be used when detailing any if statements.
+
+#### Function Definition
 
 Source: **funkyweave.log**
+
 Name: **decision**
 
 Parameters:
@@ -148,7 +155,12 @@ log.decision('log a decision step')
 
 ### Input
 
+A node to show when data is taken into a flow.
+
+#### Function Definition
+
 Source: **funkyweave.log**
+
 Name: **input**
 
 Parameters:
@@ -173,7 +185,12 @@ log.input('log a input step')
 
 ### Output
 
+A node to show when data is output from a flow.
+
+#### Function Definition
+
 Source: **funkyweave.log**
+
 Name: **output**
 
 Parameters:
@@ -197,7 +214,12 @@ log.output('log a output step')
 
 ### Process
 
+A node that covers basic flow steps that aren't defined using any other type of node.
+
+#### Function Definition
+
 Source: **funkyweave.log**
+
 Name: **process**
 
 Parameters:
@@ -223,7 +245,10 @@ log.process('log a process step')
 
 To end a flow and save it, run the following:
 
+#### Function Definition
+
 Source: **funkyweave.log**
+
 Name: **end**
 
 Parameters:
