@@ -67,6 +67,8 @@ Every time a node is created, **FunkyWeave** will also extract the `file name` a
 
 ### Database
 
+Should be used when directly interacting with a database or other data source.
+
 ```
 log.database('log a database step')
 ```
@@ -75,6 +77,8 @@ log.database('log a database step')
 <img src="./images/database.png" alt="database"/>
 
 ### Decision
+
+Should be used when detailing an if statement.
 
 ```
 log.decision('log a decision step')
@@ -148,10 +152,59 @@ Which should produce a flow that looks like this:
 
 ## Advanced Logging
 
-### Loops
+Logging each function is great but what you really want to do is be able to link functions togther. For this we can use one of the following.
+
+### Start Child
+
+If the function you wish to detail is within the same Group, Flow, you pass the parentLog into the function and create a new logging instance from it using **startChild**.
+
+You need to provide a `parentLog`, `description` and optionally, a new `source` for the log. Here's an example:
+
+```
+# Saved within an index.js file
+const { logger, visualiser } = require('funkyweave')
+
+const testLog = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.database('log a database step')
+	testLog2(log)
+	log.process('log a process step')
+	log.end('end function')
+}
+
+const testLog2 = (parentLog) => {
+	const log = logger.startChild(parentLog, 'start function', 'client')
+	log.process('logData2 process')
+	log.end('end function')
+}
+
+testLog()
+```
+
+Which should produce a flow that looks like this:
+
+<img src="./images/example_2.png" alt="example_2"/>
 
 ### ParentLog
 
-### Start Child
+Imagine this scenario, on the `client` side, a user presses a `start` button, which triggers a message to the `server` which in turn, queries a set of data that's return to the user populates a form for the `client`.
+
+If we define `client` and `server` as two sources, the interaction above is actually detailing two seperate flows:
+* A message sent from the `client` to the `server`.
+* Data sent from the `server` to the `client`.
+
+To link two flows together, we need to pass the `parentLog within the options object` when we start a new log.
+
+#### Switch Statements
+
+#### Directlink
+
+### ParentGroup & ParentFlow
+
+### Loops
+
+#### startLoop
+
+#### endLoop
 
 ### Orphans
