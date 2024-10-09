@@ -37,13 +37,40 @@ Logging is broken down into a number of simple steps
 
 ### Start Log
 
-To initialise `FunkyWeave logging`, there are 4 required field and a set of optional variables that can be passed into the start function, these are:
+To initialise **FunkyWeave** `logging`, there are 4 required field and a set of optional variables that can be passed into the start function.
 
-* **Description**: A text description printed in the `starting flow`. For example `start function`
-* **Group**: Used to group one or more `flows` together. For example `page initialisation`, which would contain all flows run during the initialisation of a web-page. 
-* **Flow**: Used to group one or more `sources` together. For example, `query user data`, `query shopping items` and `render page` could all be seperate flows within the same `page initialisation` group.
-* **Source**: Used to group one or more `descriptions` together. For example, if you wished to seperate out `database queries`, `server functions` and `client-side functions`, each of these can exist as seperate sources within each flow.
-* **Options**: A object that contains additional configurations information which will be detailed later.
+#### Function Definition
+
+Source: **funkyweave.logging**
+Name: **startLog**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example `start function`.
+* **Group (string)**: Used to group one or more `flows` together. For example `page initialisation`, which would contain all flows run during the initialisation of a web-page. 
+* **Flow (string)**: Used to group one or more `sources` together. For example, `query user data`, `query shopping items` and `render page` could all be seperate flows within the same `page initialisation` group.
+* **Source (string)**: Used to group one or more `descriptions` together. For example, if you wished to seperate out `database queries`, `server functions` and `client-side functions`, each of these can exist as seperate sources within each flow.
+* **Options (object) Optional**: A object that contains additional configurations information.
+	* **parentLog (Log)**: A log instance that can be used to link one flow to another flow.
+	* **offset (int)**: A value used to offset where on the parentLog the flow join is made. This value defaults to 0 if not provided, useful when defining `switch` logs.
+	* **directLink (obj)**: A object that can be used to join one object to another without having to pass in a parentLog. This can be used if it impractical to pass logs between functions. 
+	* **parentGroup (string)**: If you'd prefer to join one group to another to demonstrate the functional flow, use this parameter to identify that parentGroup.
+	* **parentFlow (string)**: If you'd prefer to join one flow to another to demonstrate the functional flow, use this parameter to identify that parentGroup
+
+```
+const log = startLog(
+	Description,
+	Group,
+	Flow,
+	Source,
+	{
+		parentFlow,
+		offset,
+		directLink,
+		parentGroup,
+		parentFlow
+	}
+)
+```
 
 The below script is an example of how a user could initialise a `log instance` for use in a function:
 
@@ -69,6 +96,22 @@ Every time a node is created, **FunkyWeave** will also extract the `file name` a
 
 Should be used when directly interacting with a database or other data source.
 
+Source: **funkyweave.log**
+Name: **database**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+
+```
+log.database(
+	Description,
+	Orphan
+)
+```
+
+Here's an example:
+
 ```
 log.database('log a database step')
 ```
@@ -80,6 +123,22 @@ log.database('log a database step')
 
 Should be used when detailing an if statement.
 
+Source: **funkyweave.log**
+Name: **decision**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+
+```
+log.decision(
+	Description,
+	Orphan
+)
+```
+
+Here's an example:
+
 ```
 log.decision('log a decision step')
 ```
@@ -87,7 +146,23 @@ log.decision('log a decision step')
 
 <img src="./images/decision.png" alt="decision"/>
 
-### Input/Output
+### Input
+
+Source: **funkyweave.log**
+Name: **input**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+
+```
+log.input(
+	Description,
+	Orphan
+)
+```
+
+Here's an example:
 
 ```
 log.input('log a input step')
@@ -95,6 +170,23 @@ log.input('log a input step')
 **Expected output:**
 
 <img src="./images/input.png" alt="input"/>
+
+### Output
+
+Source: **funkyweave.log**
+Name: **output**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+
+```
+log.output(
+	Description,
+	Orphan
+)
+```
+Here's an example:
 
 ```
 log.output('log a output step')
@@ -104,6 +196,21 @@ log.output('log a output step')
 <img src="./images/output.png" alt="output"/>
 
 ### Process
+
+Source: **funkyweave.log**
+Name: **process**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+
+```
+log.process(
+	Description,
+	Orphan
+)
+```
+Here's an example:
 
 ```
 log.process('log a process step')
@@ -115,6 +222,21 @@ log.process('log a process step')
 ### End
 
 To end a flow and save it, run the following:
+
+Source: **funkyweave.log**
+Name: **end**
+
+Parameters:
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+
+```
+log.end(
+	Description,
+	Orphan
+)
+```
+
+Here's an example:
 
 ```
 log.end('log the end step')
@@ -137,9 +259,7 @@ const testLog = () => {
 	log.decision('log a decision step')
 	log.input('log a input step')
 	log.output('log a output step')
-	testLog2(log)
 	log.process('log a process step')
-	testLog2a(log)
 	log.end('end function')
 }
 
@@ -194,6 +314,8 @@ If we define `client` and `server` as two sources, the interaction above is actu
 * Data sent from the `server` to the `client`.
 
 To link two flows together, we need to pass the `parentLog within the options object` when we start a new log.
+
+#### Offset
 
 #### Switch Statements
 
