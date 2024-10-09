@@ -255,7 +255,12 @@ const FunctionLogHandler = class {
 				if (options.loopName) {
 					data.functionOverride = options.loopName
 				} else {
-					data.functionOverride = `${functionName}_Loop`
+					if (data.history.length > 0) {
+						const lastItem = data.history[data.history.length - 1].description
+						data.functionOverride = `${lastItem} Loop`
+					} else {
+						data.functionOverride = `${functionName} Loop`
+					}
 				}
 			}
 			if (data.functionOverride) {

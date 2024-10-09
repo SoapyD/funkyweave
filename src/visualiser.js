@@ -232,9 +232,10 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#FBF6EA', options.colours, 'class', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name.replace(/\s+/g, '_')}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}" 
 			label="${options.name}"
@@ -253,9 +254,10 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'source', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name.replace(/\s+/g, '_')}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}"
 			label="${options.name}"
@@ -274,16 +276,17 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'flow', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name.replace(/\s+/g, '_')}  {
+		subgraph cluster_${name}  {
 			style=filled
 			color="${colour}"
 			label="${options.name}"
 			fontsize=14
 
 			node [style=filled, fillcolor=white, shape=box]
-			node_${options.name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
+			node_${name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
 
 			${sourceString}          	 
 		}    
@@ -298,16 +301,17 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#BEA9DF', options.colours, 'group', options.name)
+		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
-		subgraph cluster_${options.name} {
+		subgraph cluster_${name} {
 			style=filled
 			color="${colour}"
-			label=<<B>"${options.name}"</B>>
+			label=<<B>${options.name}</B>>
 			fontsize=20  
 
 			node [style=filled, fillcolor=white, shape=box]
-			node_${options.name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
+			node_${name}[label="", shape=circle, fillcolor="${colour}", color="${colour}"];
 
 			${flowString}
 		}
