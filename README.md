@@ -29,7 +29,7 @@ const { logger, visualiser } = require('funkyweave')
 
 For more information on how **FunkyWeave** works, please take a look at the following documentation:
 
-* [Basic Logging]('./docs/basic_logging')
-* [Node Types]('./docs/nodes')
-* [Advanced Logging]('./docs/advanced_logging')
-* [Visualising Flows]('./docs/visualiser')
+* [Basic Logging](/docs/advanced_logging.md)
+* [Node Types](/docs/nodes.md)
+* [Advanced Logging](/docs/advanced_logging.md)
+* [Visualising Flows](/docs/visualiser.md)
