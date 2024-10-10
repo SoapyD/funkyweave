@@ -24,7 +24,6 @@ npm i funkyweave
 const { logger, visualiser } = require('funkyweave')
 ```
 
-
 ## Further Reading
 
 For more information on how **FunkyWeave** works, please take a look at the following documentation:
