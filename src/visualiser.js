@@ -81,13 +81,17 @@ const Visualiser = class {
 			combinedLinks.push(uniqueLinks)
 
 			if (jsonData.parentFlow) {
-				const parentFlowJoin = `node_${jsonData.parentFlow} -> node_${jsonData.flow} [color=black, arrowhead=normal]`
+				const name = jsonData.parentFlow.replace(/\s+/g, '_')
+				const flowName = jsonData.flow.replace(/\s+/g, '_')				
+				const parentFlowJoin = `node_${name} -> node_${flowName} [color=black, arrowhead=normal]`
 				if (combinedFileLinks.indexOf(parentFlowJoin) === -1) {
 					combinedFileLinks.push(parentFlowJoin)
 				}
 			}
 			if (jsonData.parentGroup) {
-				const parentGroupJoin = `node_${jsonData.parentGroup} -> node_${jsonData.group} [color=black, arrowhead=normal]`
+				const name = jsonData.parentGroup.replace(/\s+/g, '_')
+				const groupName = jsonData.group.replace(/\s+/g, '_')
+				const parentGroupJoin = `node_${name} -> node_${groupName} [color=black, arrowhead=normal]`
 				if (combinedFileLinks.indexOf(parentGroupJoin) === -1) {
 					combinedFileLinks.push(parentGroupJoin)
 				}
@@ -497,7 +501,7 @@ const Visualiser = class {
 		return links
 	}
 
-	run = async (filename, fileType, colours, rankdir = 'TB') => {
+	run = async (filename, fileFormat, colours, rankdir = 'TB') => {
 		const [combinedData, combinedLinks, combinedParentLinks, fileJoins] = this.loadAndCombineJsonFiles()
 		const formattedJson = this.convertJsonStructure(combinedData)
 		this.saveFile(JSON.stringify(formattedJson, null, 2), 'formatted_json.json')
@@ -506,7 +510,7 @@ const Visualiser = class {
 
 		const gvString = this.graphVizConvert(formattedJson, links, parentLinks, fileJoins, colours, rankdir)
 		this.saveFile(gvString, `${filename}.dot`)
-		this.saveGraphviz(`${filename}.dot`, fileType)
+		this.saveGraphviz(`${filename}.dot`, fileFormat)
 	}
 }
 

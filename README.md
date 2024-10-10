@@ -251,7 +251,7 @@ log.process('log a process step')
 
 ### End
 
-To end a flow and save it, run the following:
+To end a flow and save it, create an `end` node. This will save the node to a `./data/flows` folder in the `root of your project`. To avoid duplicate files, `hashing` is used to generate filenames based on their content:
 
 #### Function Definition
 
@@ -348,18 +348,229 @@ If we define `client` and `server` as two sources, the interaction above is actu
 
 To link two flows together, we need to pass the `parentLog within the options object` when we start a new log.
 
-#### Offset
+#### Function Definition
 
-#### Switch Statements
+Source: **funkyweave.logging**
 
-#### Directlink
+Name: **startLog**
+
+Parameters: see [startLog](#start-log) options
+
+#### Example
+
+Here's an example:
+
+```
+const { logger, visualiser } = require('funkyweave')
+
+const testLog = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('log a process step')
+	testLog3(log)
+	log.end('end function')
+}
+
+const testLog3 = (parentLog) => {
+	const log = logger.start('start function', 'Table Setup Functions', 'Table_Setup', 'server', { parentLog })
+	log.process('logData3 process')
+	log.output('output')
+	log.end('end function')
+}
+
+testLog()
+```
+**Expected output:**
+
+<img src="./images/parentLog.png" alt="parentLog"/>
+
+### Offset
+
+Sometimes you may wish to  offset a `parentLog` join by any number of nodes. For example, in `switch statements`, if there's a lot of code, you may wish to split each section of code into a new flow. This can be especially useful if each switch step belongs to a different `Group`, `Flow` or `Source`.
+
+Source: **funkyweave.logging**
+
+Name: **startLog**
+
+Parameters: see [startLog](#start-log) options
+
+#### Example
+
+Here's an example:
+
+```
+const { logger, visualiser } = require('funkyweave')
+
+const testLog8 = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('run the switch statement 0 position')
+	log.process('run the switch statement 1 position')
+	log.process('run the switch statement 2 position')
+
+	let log2 = {}
+	for (let i = 0; i < 3; i++) {
+		switch(i) {
+			case 0:
+				log2 = logger.start(`start switch pos ${i}`, 'Room Setup Test Group', `Rooms Setup step ${i}`, 'server', {parentLog: log} )
+				log2.process("run process")
+				log2.end("end function")
+				break;
+			case 1:
+				log2 = logger.start(`start switch pos ${i}`, 'Room Deployment Group', `Rooms Setup step ${i}`, 'server', {parentLog: log, offset: 1} )
+				log2.process("run process")
+				log2.end("end function")				
+				break;
+			case 2:
+				log2 = logger.start(`start switch pos ${i}`, 'Room Deployment Group', `Rooms Setup step ${i}`, 'server', {parentLog: log, offset: 2} )
+				log2.process("run process")
+				log2.end("end function")				
+				break;									
+		}
+	}
+
+
+	log.end('end function')
+}
+
+testLog8()
+```
+**Expected output:**
+
+<img src="./images/offset.png" alt="offSet"/>
+
+### Directlink
+
+As mentioned above, there may be instances where you won't be able to pass a parentLog into a child function in order to link two functions together. In these cases, you can provide a `directLink` object as an option instead.
+
+You need to provide the `Group`, `Flow`, `Source`, `File`, `Function`, `Description` to make the link.
+
+Source: **funkyweave.logging**
+
+Name: **startLog**
+
+Parameters: see [startLog](#start-log) options
+
+#### Example
+
+Here's an example:
+
+```
+
+```
+**Expected output:**
+
+<img src="./images/.png" alt="offSet"/>
 
 ### ParentGroup & ParentFlow
+
+If you don't need to join two nodes to one another but instead which to demonstrate the flow between `groups` or `flows`, you can pass either `parentGroup` or `parentFlow` as an optional parameter.
+
+Source: **funkyweave.logging**
+
+Name: **startLog**
+
+Parameters: see [startLog](#start-log) options
+
+#### Example
+
+Here's an example:
+
+```
+const { logger, visualiser } = require('funkyweave')
+
+const testLog9 = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('log a process step')
+	log.end('end function')
+}
+
+const testLog10 = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Room Create', 'server', { parentFlow: 'Rooms Setup' })
+	log.process('logData3 process')
+	log.output('output')
+	log.end('end function')
+}
+
+const testLog11 = () => {
+	const log = logger.start('start function', 'Table Setup Functions', 'Table_Setup', 'client', { parentGroup: 'Room Setup Test Group' })
+	log.process('logData3 process')
+	log.output('output')
+	log.end('end function')
+}
+
+testLog9()
+testLog10()
+testLog11()
+```
+**Expected output:**
+
+<img src="./images/parentgroup.png" alt="offSet"/>
 
 ### Loops
 
 #### startLoop
 
+#### Function Definition
+
+Source: **funkyweave.logging**
+
+Name: **startLog**
+
+Parameters:
+
 #### endLoop
 
-### Orphans
+### Orphan
+
+#### Function Definition
+
+Source: **funkyweave.logging**
+
+Name: **startLog**
+
+Parameters:
+
+## Visualise
+
+To render the files within the `./data/flow` folder, you need to use **FunkyWeave's** `visualiser` class.
+
+#### Function Definition
+
+Source: **funkyweave.visualiser**
+
+Name: **run**
+
+Parameters:
+* **fileName (str):** The output file name.
+* **fileFormat (str):** The output file format which can be any dot rendering [file formats supported by graphViz](https://graphviz.org/docs/outputs/).
+* **colours (object):** An object that allows you to set the colour value of all `Groups`, `Flows`, `Sources`, `Classes`, `Functions` or `Flow Nodes` or colour specific sub-types within each of those groups.
+	* **group (str | object) Optional:** Used colour names, hex values or provide an object with specific group names as keys, each with their own colour value.
+	* **flow (str | object) Optional:** Used colour names, hex values or provide an object with specific flow names as keys, each with their own colour value.
+	* **source (str | object) Optional:** Used colour names, hex values or provide an object with specific source names as keys, each with their own colour value.
+	* **file (str | object) Optional:** Used colour names, hex values or provide an object with specific file names as keys, each with their own colour value.
+	* **function (str | object) Optional:** Used colour names, hex values or provide an object with specific function names as keys, each with their own colour value.
+	* **type (str | object) Optional:** Used colour names, hex values or provide an object with specific node type names as keys, each with their own colour value.			
+* **rankdir (str) Optional:** Describes which direction you wisk to rank the nodes. This value defaults to `TB` (top to bottom). Any `rankdir` value [used by graphViz can be used here](https://graphviz.org/docs/attrs/rankdir/).
+
+```
+const log = visualiser.run(
+	fileName,
+	fileFormat,
+	colours: {
+		group,
+		flow,
+		source,
+		class,
+		function,
+		type
+	},
+	rankdir
+)
+```
+
+#### Example
+
+Here's a complete example of how to generate a flow then visualise it:
+
+```
+
+```
