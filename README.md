@@ -8,7 +8,7 @@ Have you ever wanted to `visualise the interactions` between each function in yo
 
 **FunkyWeave** is a light-weight `logger` that can be used to `visualise each step in logic`, outputting `flow diagrams` in `dot format` then drawn using `Graphviz` into multiple formats.
 
-<img src="./images/cover_flow2.png" alt="cover_flow"/>
+<img src="./images/cover_flow3.png" alt="cover_flow"/>
 
 ## Installation
 
