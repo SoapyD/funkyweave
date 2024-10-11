@@ -2,7 +2,7 @@
 
 Logging is broken down into a number of simple steps
 
-* `Start a log` or create a `child of an existing log` for a function
+* `Start a log` or create a `branch of an existing log` for a function
 * Add process steps, detailing the `logic of that function`, using common `flow diagram symbols`, for example:
 	* Start
 	* Database
@@ -61,7 +61,7 @@ When the `log` is `initialised`, it will automatically create a `start` node:
 
 **Expected output:**
 
-<img src="./images/start.png" alt="start"/>
+<img src="../images/start.png" alt="start"/>
 
 Log instances should be created in each function you wish to visualise later.
 

@@ -17,12 +17,12 @@ Name: **database**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.database(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example
@@ -48,12 +48,12 @@ Name: **decision**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.decision(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example
@@ -79,12 +79,12 @@ Name: **input**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.input(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example
@@ -110,12 +110,12 @@ Name: **output**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.output(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example
@@ -141,12 +141,12 @@ Name: **process**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Orphan (boolean)**: A bool controlling where the node is treated as a [Orphan](#orphan) or not.
+* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.process(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example
@@ -175,7 +175,7 @@ Parameters:
 ```
 log.end(
 	Description,
-	Orphan
+	Leaf
 )
 ```
 #### Example

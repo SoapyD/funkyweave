@@ -35,8 +35,8 @@ const Logger = class {
 	// 	return `${hashHex.slice(0, 32)}.${extension}`
 	// }
 
-	createOrphan = (description, options, shapeName, processType) => {
-		const log = this.logHandler.startChild(this)
+	createLeaf = (description, options, shapeName, processType) => {
+		const log = this.logHandler.startBranch(this)
 		log[processType](description, false, { stackDepth: 5 })
 
 		log.save()
@@ -69,41 +69,41 @@ const Logger = class {
 		})
 	}
 
-	process = (description, orphan = false, options = {}) => {
-		if (orphan) {
-			return this.createOrphan(description, options, 'box', 'process')
+	process = (description, leaf = false, options = {}) => {
+		if (leaf) {
+			return this.createLeaf(description, options, 'box', 'process')
 		} else {
 			this.logHandler.log(this.logData, description, options, 'box', 'process')
 		}
 	}
 
-	input = (description, orphan = false, options = {}) => {
-		if (orphan) {
-			return this.createOrphan(description, options, 'parallelogram', 'input')
+	input = (description, leaf = false, options = {}) => {
+		if (leaf) {
+			return this.createLeaf(description, options, 'parallelogram', 'input')
 		} else {
 			this.logHandler.log(this.logData, description, options, 'parallelogram', 'input')
 		}
 	}
 
-	output = (description, orphan = false, options = {}) => {
-		if (orphan) {
-			return this.createOrphan(description, options, 'parallelogram', 'output')
+	output = (description, leaf = false, options = {}) => {
+		if (leaf) {
+			return this.createLeaf(description, options, 'parallelogram', 'output')
 		} else {
 			this.logHandler.log(this.logData, description, options, 'parallelogram', 'output')
 		}
 	}
 
-	database = (description, orphan = false, options = {}) => {
-		if (orphan) {
-			return this.createOrphan(description, options, 'cylinder', 'database')
+	database = (description, leaf = false, options = {}) => {
+		if (leaf) {
+			return this.createLeaf(description, options, 'cylinder', 'database')
 		} else {
 			this.logHandler.log(this.logData, description, options, 'cylinder', 'database')
 		}
 	}
 
-	decision = (description, orphan = false, options = {}) => {
-		if (orphan) {
-			return this.createOrphan(description, options, 'diamond', 'decision')
+	decision = (description, leaf = false, options = {}) => {
+		if (leaf) {
+			return this.createLeaf(description, options, 'diamond', 'decision')
 		} else {
 			this.logHandler.log(this.logData, description, options, 'diamond', 'decision')
 		}
@@ -158,18 +158,18 @@ const FunctionLogHandler = class {
 		// this.hashes = []		
 	}
 
-	clearFolder = () => {
-		// Function to clear all files in a folder
-		fs.readdir(directory, (err, files) => {
-			if (err) throw err
-			console.log(`Deleting files from ${directory}`)
+	clearFolder = async () => {
+		try {
+			const files = await fs.promises.readdir(directory);
+			console.log(`Deleting files from ${directory}`);
+			
 			for (const file of files) {
-				const filePath = path.join(directory, file)
-				fs.unlink(filePath, (err) => {
-					if (err) throw err
-				})
+				const filePath = path.join(directory, file);
+				await fs.promises.unlink(filePath);
 			}
-		})
+		} catch (err) {
+			throw err;
+		}
 	}
 
 	createChild = (logData, options = {}) => {
@@ -198,6 +198,7 @@ const FunctionLogHandler = class {
 
 	getLink = (options) => {
 		if ('directLink' in options) {
+			options.directLink.description = this.insertLineBreaks(options.directLink.description)
 			return options.directLink
 		}
 
@@ -329,13 +330,13 @@ const FunctionLogHandler = class {
 				data.history.push(newEntry)
 
 				if (options.parentLink) {
-					const parentLog = options.parentLink.parentLog.logData
-					if (parentLog.group && parentLog.flow && parentLog.source
-					) {
-						data.parentLink = {
-							parent: this.getLink(options.parentLink),
-							child: this.getLink({ parentLog: { logData: data } })
-						}
+					// const parentLog = options.parentLink.parentLog.logData
+					// if (parentLog.group && parentLog.flow && parentLog.source
+					// ) {	
+					// }
+					data.parentLink = {
+						parent: this.getLink(options.parentLink),
+						child: this.getLink({ parentLog: { logData: data } })
 					}
 				}
 			}
@@ -355,6 +356,7 @@ const FunctionLogHandler = class {
 			source
 		}
 		if (options) {
+			let linkSet = false
 			if (options.parentLog) {
 				logOptions.parentLink = {
 					parentLog: options.parentLog
@@ -362,7 +364,16 @@ const FunctionLogHandler = class {
 				if (options.offset) {
 					logOptions.parentLink.offset = options.offset
 				}
-			} else {
+			}
+			if (linkSet === false) {
+				if (options.directLink) {
+					logOptions.parentLink = {
+						directLink: options.directLink
+					}
+					linkSet = true
+				}
+			}			
+			if (linkSet === false) {
 				if (options.parentFlow) {
 					logOptions.parentFlow = options.parentFlow
 				}
@@ -380,7 +391,7 @@ const FunctionLogHandler = class {
 		return new Logger({ logData, logHandler: this })
 	}
 
-	startChild = (log, description = '', source = '') => {
+	startBranch = (log, description = '', source = '') => {
 		const options = {}
 		let logData = this.createChild(log.logData, options)
 		if (source) {

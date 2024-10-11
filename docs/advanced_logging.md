@@ -2,9 +2,9 @@
 
 Logging each function is great but what you really want to do is be able to link functions togther. For this we can use one of the following.
 
-### Start Child
+### Start Branch
 
-If the function you wish to detail is within the same Group, Flow, you pass the parentLog into the function and create a new logging instance from it using **startChild**.
+If the function you wish to detail is within the same Group, Flow, you pass the parentLog into the function and create a new logging instance from it using **startBranch**.
 
 You need to provide a `parentLog`, `description` and optionally, a new `source` for the log. Here's an example:
 
@@ -21,7 +21,7 @@ const testLog = () => {
 }
 
 const testLog2 = (parentLog) => {
-	const log = logger.startChild(parentLog, 'start function', 'client')
+	const log = logger.startBranch(parentLog, 'start function', 'client')
 	log.process('logData2 process')
 	log.end('end function')
 }
@@ -134,7 +134,7 @@ testLog8()
 
 ### Directlink
 
-As mentioned above, there may be instances where you won't be able to pass a parentLog into a child function in order to link two functions together. In these cases, you can provide a `directLink` object as an option instead.
+As mentioned above, there may be instances where you won't be able to pass a parentLog into a branch function in order to link two functions together. In these cases, you can provide a `directLink` object as an option instead.
 
 You need to provide the `Group`, `Flow`, `Source`, `File`, `Function`, `Description` to make the link.
 
@@ -149,11 +149,34 @@ Parameters: see [startLog](#start-log) options
 Here's an example:
 
 ```
+const { logger, visualiser } = require('funkyweave')
 
+const testLog = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('log a process step')
+	log.end('end function')
+}
+
+const testLog2 = () => {
+	const directLink = {
+		group: 'Room Setup Test Group',
+		flow: 'Rooms Setup',
+		source: 'server',
+		class: 'index',
+		function: 'testLog',
+		description: 'log a process step'
+	}
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'client', { directLink })
+	log.process('testLog2 process')
+	log.end('end function')
+}
+
+testLog()
+testLog2()
 ```
 **Expected output:**
 
-<img src="../images/.png" alt="offSet"/>
+<img src="../images/directLink.png" alt="directLink"/>
 
 ### ParentGroup & ParentFlow
 
@@ -210,17 +233,43 @@ Name: **startLog**
 
 Parameters:
 
-### Orphan
+### Leaf
+
+Sometimes it may be unnecessary to start a log, add nodes and close the log off again, especially if there are no further branches. In these cases, we can set the `leaf` parameter in a node to `true`, which will automatically create a `branch` of the given `node` then immediately `end` it.
 
 #### Function Definition
 
-Source: **funkyweave.logging**
+Source: **funkyweave.log**
 
-Name: **startLog**
+Parameters: see [Node](nodes.md) options
 
-Parameters:
+#### Example
+
+Here's an example:
+
+```
+const { logger, visualiser } = require('funkyweave')
+
+const testLog = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('log a process step')
+	testLog2(log)
+	log.end('end function')
+}
+
+const testLog2 = (parentLog) => {
+	parentLog.database('run database query', true)
+}
+
+testLog()
+```
+**Expected output:**
+
+<img src="../images/leaf.png" alt="leaf"/>
 
 ### clearFolder
+
+**FunkyWeave** logging has a built-in means for deleting any files within the `./data/flows` folder, which can be run `asynchronously` to ensure the folder is clear before any other script is run.
 
 #### Function Definition
 
@@ -228,4 +277,17 @@ Source: **funkyweave.logging**
 
 Name: **clearFolder**
 
-Parameters:
+Parameters: 
+
+`No Parameters`
+
+#### Example
+
+Here's an example:
+
+```
+async function run () {
+	await logger.clearFolder()
+}
+run()
+```
