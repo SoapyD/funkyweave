@@ -11,7 +11,7 @@ Name: **run**
 Parameters:
 * **fileName (str):** The output file name.
 * **fileFormat (str):** The output file format which can be any dot rendering [file formats supported by graphViz](https://graphviz.org/docs/outputs/).
-* **colours (object):** An object that allows you to set the colour value of all `Groups`, `Flows`, `Sources`, `Classes`, `Functions` or `Flow Nodes` or colour specific sub-types within each of those groups.
+* **colours (object):** An object that allows you to set the colour value of all `Groups`, `Flows`, `Sources`, `Files`, `Functions` or `Flow Nodes` or colour specific sub-types within each of those groups.
 	* **group (str | object) Optional:** Used colour names, hex values or provide an object with specific group names as keys, each with their own colour value.
 	* **flow (str | object) Optional:** Used colour names, hex values or provide an object with specific flow names as keys, each with their own colour value.
 	* **source (str | object) Optional:** Used colour names, hex values or provide an object with specific source names as keys, each with their own colour value.
@@ -28,7 +28,7 @@ const log = visualiser.run(
 		group,
 		flow,
 		source,
-		class,
+		file,
 		function,
 		type
 	},

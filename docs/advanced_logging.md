@@ -162,7 +162,7 @@ const testLog2 = () => {
 		group: 'Room Setup Test Group',
 		flow: 'Rooms Setup',
 		source: 'server',
-		class: 'index',
+		file: 'index',
 		function: 'testLog',
 		description: 'log a process step'
 	}
