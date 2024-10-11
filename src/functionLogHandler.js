@@ -212,7 +212,7 @@ const FunctionLogHandler = class {
 			group: logData.group,
 			flow: logData.flow,
 			source: historyItem.source,
-			class: historyItem.class,
+			file: historyItem.file,
 			function: historyItem.function,
 			description: historyItem.description
 		}
@@ -251,7 +251,7 @@ const FunctionLogHandler = class {
 			const match = callerStackLine.match(regex)
 			let functionName = match[1].split(' ')[1]
 			functionName = functionName.split('.')[functionName.split('.').length - 1]
-			const className = match[2].split('\\').pop().split(':')[0].split('.')[0]
+			const fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
 			if (functionName === '<anonymous>') {
 				functionName = 'no_named_function'
 			}
@@ -259,7 +259,7 @@ const FunctionLogHandler = class {
 			// const error = new Error()
 			// const stack = error.stack.split('\n')
 			// const callerStackLine = stack[stackDepth].trim()
-			// const className = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
+			// const fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
 			// let functionName = callerStackLine.split('@')[0]
 			// functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
 			// if (functionName === '<anonymous>') {
@@ -319,7 +319,7 @@ const FunctionLogHandler = class {
 					group: data.group,
 					flow: data.flow,
 					source: data.source,
-					class: className,
+					file: fileName,
 					function: functionName,
 					shape: shapeName,
 					type: processType,

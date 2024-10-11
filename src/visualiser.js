@@ -114,7 +114,7 @@ const Visualiser = class {
 			const groupName = item.group
 			const flowName = item.flow
 			const sourceName = item.source
-			const className = item.class
+			const fileName = item.file
 			const functionName = item.function
 			const description = item.description || ''
 			const shapeName = item.shape
@@ -144,30 +144,30 @@ const Visualiser = class {
 			if (!flowObject.sources[sourceName]) {
 				flowObject.sources[sourceName] = {
 					name: sourceName,
-					classes: {}
+					files: {}
 				}
 			}
 
 			const sourceObject = flowObject.sources[sourceName]
 
-			// Ensure the class object exists within the source
-			if (!sourceObject.classes[className]) {
-				sourceObject.classes[className] = {
-					name: className,
+			// Ensure the file object exists within the source
+			if (!sourceObject.files[fileName]) {
+				sourceObject.files[fileName] = {
+					name: fileName,
 					functions: []
 				}
 			}
 
-			const classObject = sourceObject.classes[className]
+			const fileObject = sourceObject.files[fileName]
 
 			// Find the function or create a new one if it doesn't exist
-			let existingFunction = classObject.functions.find(f => f.name === functionName)
+			let existingFunction = fileObject.functions.find(f => f.name === functionName)
 			if (!existingFunction) {
 				existingFunction = {
 					name: functionName,
 					descriptions: []
 				}
-				classObject.functions.push(existingFunction)
+				fileObject.functions.push(existingFunction)
 			}
 
 			// Only push unique descriptions
@@ -184,7 +184,7 @@ const Visualiser = class {
 					name: flow.name,
 					sources: Object.values(flow.sources).map(source => ({
 						name: source.name,
-						classes: Object.values(source.classes)
+						files: Object.values(source.files)
 					}))
 				}))
 			}))
@@ -229,13 +229,13 @@ const Visualiser = class {
 		return text
 	}
 
-	formatClass = (options) => {
+	formatFile = (options) => {
 		let functionsString = ''
 		options.functions.forEach((item) => {
 			functionsString += `${item}\n`
 		})
 
-		const colour = this.getColour('#FBF6EA', options.colours, 'class', options.name)
+		const colour = this.getColour('#FBF6EA', options.colours, 'file', options.name)
 		const name = options.name.replace(/\s+/g, '_')
 
 		const text = `
@@ -252,9 +252,9 @@ const Visualiser = class {
 	}
 
 	formatSource = (options) => {
-		let classString = ''
-		options.classes.forEach((item) => {
-			classString += `${item}\n`
+		let fileString = ''
+		options.files.forEach((item) => {
+			fileString += `${item}\n`
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'source', options.name)
@@ -267,7 +267,7 @@ const Visualiser = class {
 			label="${options.name}"
 			fontsize=14
 
-			${classString}          	 
+			${fileString}          	 
 		}    
 		`
 		return text
@@ -332,10 +332,10 @@ const Visualiser = class {
 			groupItem.flows.forEach((flowItem, fli) => {
 				const sourcesList = []
 				flowItem.sources.forEach((sourceItem, si) => {
-					const classesList = []
-					sourceItem.classes.forEach((classItem, ci) => {
+					const filesList = []
+					sourceItem.files.forEach((fileItem, ci) => {
 						const functionsList = []
-						classItem.functions.forEach((functionItem, fi) => {
+						fileItem.functions.forEach((functionItem, fi) => {
 							functionsList.push(this.formatFunction({
 								name: functionItem.name,
 								descriptions: functionItem.descriptions,
@@ -348,8 +348,8 @@ const Visualiser = class {
 							}))
 						})
 
-						classesList.push(this.formatClass({
-							name: classItem.name,
+						filesList.push(this.formatFile({
+							name: fileItem.name,
 							functions: functionsList,
 							colours: nodeColours
 						}))
@@ -357,7 +357,7 @@ const Visualiser = class {
 
 					sourcesList.push(this.formatSource({
 						name: sourceItem.name,
-						classes: classesList,
+						files: filesList,
 						colours: nodeColours
 					}))
 				})
@@ -422,11 +422,11 @@ const Visualiser = class {
 							if (sourceItem.name === searchTerms.source) {
 								id += `${sourceId}_`
 
-								sourceItem.classes.forEach((classItem, classId) => {
-									if (classItem.name === searchTerms.class) {
-										id += `${classId}_`
+								sourceItem.files.forEach((fileItem, fileId) => {
+									if (fileItem.name === searchTerms.file) {
+										id += `${fileId}_`
 
-										classItem.functions.forEach((functionItem, functionId) => {
+										fileItem.functions.forEach((functionItem, functionId) => {
 											if (functionItem.name === searchTerms.function) {
 												id += `${functionId}_`
 												functionItem.descriptions.forEach((descriptionItem, descriptionId) => {
