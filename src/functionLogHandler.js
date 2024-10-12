@@ -1,10 +1,16 @@
-const fs = require('fs')
-const path = require('path')
-const crypto = require('crypto')
+let fs, path, crypto, directory;
 
-const rootDir = process.cwd();
-const directory = path.join(rootDir, 'data', 'flows');
-fs.mkdirSync(directory, { recursive: true });
+
+if (typeof window === 'undefined') {
+	// CLIENT
+	fs = require('fs')
+	path = require('path')
+	crypto = require('crypto')
+
+	const rootDir = process.cwd();
+	directory = path.join(rootDir, 'data', 'flows')
+	fs.mkdirSync(directory, { recursive: true })
+}
 
 const Logger = class {
 	constructor (options) {
@@ -12,28 +18,30 @@ const Logger = class {
 		this.logData = options.logData
 	}
 
-	getHashedFilename = (data, extension = 'txt') => {
-		// Create a SHA-256 hash
-		const hash = crypto.createHash('sha256').update(data).digest('hex')
-		// Slice to the first 32 characters
-		return `${hash.slice(0, 32)}.${extension}`
+	getHashedFilename = async(data, extension = 'txt') => {
+		if (typeof window === 'undefined') {
+			// SERVER
+			// Create a SHA-256 hash
+			const hash = await crypto.createHash('sha256').update(data).digest('hex')
+			// Slice to the first 32 characters
+			return `${hash.slice(0, 32)}.${extension}`
+		} else {
+			// CLIENT
+			// Encode data into a Uint8Array
+			const encoder = new TextEncoder()
+			const dataBuffer = encoder.encode(data)
+
+			// Generate a SHA-256 hash
+			const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
+
+			// Convert the hash buffer to a hex string
+			const hashArray = Array.from(new Uint8Array(hashBuffer))
+			const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('')
+
+			// Slice to the first 32 characters
+			return `${hashHex.slice(0, 32)}.${extension}`
+		}
 	}
-
-	// getHashedFilenameClient = async (data, extension = 'txt') => {
-	// 	// Encode data into a Uint8Array
-	// 	const encoder = new TextEncoder()
-	// 	const dataBuffer = encoder.encode(data)
-
-	// 	// Generate a SHA-256 hash
-	// 	const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
-
-	// 	// Convert the hash buffer to a hex string
-	// 	const hashArray = Array.from(new Uint8Array(hashBuffer))
-	// 	const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('')
-
-	// 	// Slice to the first 32 characters
-	// 	return `${hashHex.slice(0, 32)}.${extension}`
-	// }
 
 	createLeaf = (description, options, shapeName, processType) => {
 		const log = this.logHandler.startBranch(this)
@@ -43,7 +51,7 @@ const Logger = class {
 		return log
 	}
 
-	save = () => {
+	save = async() => {
 		const data = this.logData
 		// Convert JSON object to a string
 
@@ -52,7 +60,7 @@ const Logger = class {
 		}
 		const jsonData = JSON.stringify(data, null, 2)
 
-		const fileName = this.getHashedFilename(jsonData, 'json')
+		const fileName = await this.getHashedFilename(jsonData, 'json')
 
 		// Ensure the directory exists or create it
 		if (!fs.existsSync(directory)) {
@@ -125,37 +133,40 @@ const Logger = class {
 		}
 	}
 
-	remoteLog = (socket, options) => {
-		this.save()
+	// remoteLog = (socket, options) => {
+	remoteLog = async() => {	
+		if (typeof window === 'undefined') {
+			// SERVER
+			this.save()
+		} else {
+			// CLIENT
+			const fileName = await this.getHashedFilename(JSON.stringify(this.logData), 'json')
+
+			if (!this.logData.group || !this.logData.flow || !this.logData.description) {
+				return
+			}
+
+			// check if hashed log has already been sent, if don't don't send it.
+			if (this.logHandler.hashes.includes(fileName)) {
+				return
+			}
+			this.logHandler.hashes.push(fileName)
+
+			const returnOptions = {
+				functionGroup: 'core',
+				function: 'logFunction',
+				id: roomData.core.roomName,
+				log: this
+			}
+			messageServer(returnOptions)
+		}
 	}
-
-	// remoteLog = async () => {
-	// 	const fileName = await this.getHashedFilename(JSON.stringify(this.logData), 'json')
-
-	// 	if (!this.logData.group || !this.logData.flow || !this.logData.description) {
-	// 		return
-	// 	}
-
-	// 	// check if hashed log has already been sent, if don't don't send it.
-	// 	if (this.logHandler.hashes.includes(fileName)) {
-	// 		return
-	// 	}
-	// 	this.logHandler.hashes.push(fileName)
-
-	// 	const returnOptions = {
-	// 		functionGroup: 'core',
-	// 		function: 'logFunction',
-	// 		id: roomData.core.roomName,
-	// 		log: this
-	// 	}
-	// 	messageServer(returnOptions)
-	// }	
 }
 
 const FunctionLogHandler = class {
 	constructor (options) {
 		this.maxLineWidth = 10
-		// this.hashes = []		
+		this.hashes = []		
 	}
 
 	clearFolder = async () => {
@@ -244,27 +255,31 @@ const FunctionLogHandler = class {
 				stackDepth = options.stackDepth
 			}
 
-			const error = new Error()
-			const stack = error.stack.split('\n')
-			const callerStackLine = stack[stackDepth].trim()
-			const regex = /^(.*)\s*\((.*)\)$/
-			const match = callerStackLine.match(regex)
-			let functionName = match[1].split(' ')[1]
-			functionName = functionName.split('.')[functionName.split('.').length - 1]
-			const fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
+			let functionName = ''
+			let fileName = ''
+			if (typeof window === 'undefined') {
+				// SERVER
+				const error = new Error()
+				const stack = error.stack.split('\n')
+				const callerStackLine = stack[stackDepth].trim()
+				const regex = /^(.*)\s*\((.*)\)$/
+				const match = callerStackLine.match(regex)
+				functionName = match[1].split(' ')[1]
+				functionName = functionName.split('.')[functionName.split('.').length - 1]
+				fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
+			} else {
+				// CLIENT
+				const error = new Error()
+				const stack = error.stack.split('\n')
+				const callerStackLine = stack[stackDepth].trim()
+				fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
+				functionName = callerStackLine.split('@')[0]
+				functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
+			}
+
 			if (functionName === '<anonymous>') {
 				functionName = 'no_named_function'
 			}
-			// CLIENT
-			// const error = new Error()
-			// const stack = error.stack.split('\n')
-			// const callerStackLine = stack[stackDepth].trim()
-			// const fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
-			// let functionName = callerStackLine.split('@')[0]
-			// functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
-			// if (functionName === '<anonymous>') {
-			// 	functionName = 'no_named_function'
-			// }
 
 			let data = {
 				group: '',
