@@ -6,7 +6,26 @@ Logging each function is great but what you really want to do is be able to link
 
 If the function you wish to detail is within the same Group, Flow, you pass the parentLog into the function and create a new logging instance from it using **startBranch**.
 
-You need to provide a `parentLog`, `description` and optionally, a new `source` for the log. Here's an example:
+### Function Definition
+
+Source: **funkyweave.log**
+
+Name: **startBranch**
+
+Parameters:
+* **parentLog (Log)**: The log you wish to create a `branch` from.
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+
+```
+logging.startBranch(
+	parentLog,
+	description
+)
+```
+
+#### Example
+
+Here's an example:
 
 ```
 # Saved within an index.js file
@@ -29,7 +48,7 @@ const testLog2 = (parentLog) => {
 testLog()
 ```
 
-Which should produce a flow that looks like this:
+**Expected output:**
 
 <img src="../images/example_2.png" alt="example_2"/>
 
@@ -223,15 +242,64 @@ testLog11()
 
 <img src="../images/parentgroup.png" alt="offSet"/>
 
-## Loops
+## startLoop
+
+There are instances where you will want to running logging within a `for` of `forEach` loop without causing circular references in the flow.
+
+The `filename` for the loop is taken from the `parent node` but can be manually set with the `loopName` parameter below.
+
+**N.B.** please ensure that you use `endLoop` to end a `for logging loop` correctly.
 
 ### Function Definition
 
-Source: **funkyweave.logging**
+Source: **funkyweave.log**
 
-Name: **startLog**
+Name: **startLoop**
 
 Parameters:
+* **parentLog (Log)**: The log you wish to create a `branch` from.
+* **Description (string)**: A text description printed in the `node`. For example "run step".
+* **loopName (string) _Optional_**:If you'd like to label the `Loop` with a different `file name`.
+
+
+```
+log.startLoop(
+	Description,
+	Leaf,
+	loopName
+)
+```
+### Example
+Here's an example:
+
+```
+const { logger, visualiser } = require('funkyweave')
+
+const testLog = () => {
+	const log = logger.start('start function', 'Room Setup Test Group', 'Rooms Setup', 'server')
+	log.process('logData process')
+
+	for (let i = 0; i <= 10; i++) {
+		const forLog = logger.startLoop(log, 'start loop')
+		forLog.decision('logData2 process')
+		if (i === 0) {
+			forLog.process('if i == 0')
+		}
+		forLog.process('logData2 process 2')
+		forLog.decision('decision')
+		forLog.endLoop('end loop')
+	}
+	log.process('post endloop')
+
+	log.end('end function')
+}
+
+testLog()
+```
+**Expected output:**
+
+<img src="../images/loop.png" alt="loop"/>
+
 
 ## Leaf
 

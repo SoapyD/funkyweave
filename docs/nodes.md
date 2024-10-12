@@ -17,7 +17,7 @@ Name: **database**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
+* **Leaf (boolean) _Optional_**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.database(
@@ -48,7 +48,7 @@ Name: **decision**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
+* **Leaf (boolean) _Optional_**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.decision(
@@ -79,7 +79,7 @@ Name: **input**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
+* **Leaf (boolean) _Optional_**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.input(
@@ -110,7 +110,7 @@ Name: **output**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
+* **Leaf (boolean) _Optional_**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.output(
@@ -141,7 +141,7 @@ Name: **process**
 
 Parameters:
 * **Description (string)**: A text description printed in the `node`. For example "run step".
-* **Leaf (boolean)**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
+* **Leaf (boolean) _Optional_**: A bool controlling where the node is treated as a [Leaf](advanced_logging.md#leaf) or not.
 
 ```
 log.process(
