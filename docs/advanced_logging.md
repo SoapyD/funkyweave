@@ -1,8 +1,8 @@
-## Advanced Logging
+# Advanced Logging
 
 Logging each function is great but what you really want to do is be able to link functions togther. For this we can use one of the following.
 
-### Start Branch
+## Start Branch
 
 If the function you wish to detail is within the same Group, Flow, you pass the parentLog into the function and create a new logging instance from it using **startBranch**.
 
@@ -33,7 +33,7 @@ Which should produce a flow that looks like this:
 
 <img src="../images/example_2.png" alt="example_2"/>
 
-### ParentLog
+## ParentLog
 
 Imagine this scenario, on the `client` side, a user presses a `start` button, which triggers a message to the `server` which in turn, queries a set of data that's return to the user populates a form for the `client`.
 
@@ -43,7 +43,7 @@ If we define `client` and `server` as two sources, the interaction above is actu
 
 To link two flows together, we need to pass the `parentLog within the options object` when we start a new log.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.logging**
 
@@ -51,7 +51,7 @@ Name: **startLog**
 
 Parameters: see [startLog](#start-log) options
 
-#### Example
+### Example
 
 Here's an example:
 
@@ -78,7 +78,7 @@ testLog()
 
 <img src="../images/parentLog.png" alt="parentLog"/>
 
-### Offset
+## Offset
 
 Sometimes you may wish to  offset a `parentLog` join by any number of nodes. For example, in `switch statements`, if there's a lot of code, you may wish to split each section of code into a new flow. This can be especially useful if each switch step belongs to a different `Group`, `Flow` or `Source`.
 
@@ -88,7 +88,7 @@ Name: **startLog**
 
 Parameters: see [startLog](#start-log) options
 
-#### Example
+### Example
 
 Here's an example:
 
@@ -132,7 +132,7 @@ testLog8()
 
 <img src="../images/offset.png" alt="offSet"/>
 
-### Directlink
+## Directlink
 
 As mentioned above, there may be instances where you won't be able to pass a parentLog into a branch function in order to link two functions together. In these cases, you can provide a `directLink` object as an option instead.
 
@@ -144,7 +144,7 @@ Name: **startLog**
 
 Parameters: see [startLog](#start-log) options
 
-#### Example
+### Example
 
 Here's an example:
 
@@ -178,7 +178,7 @@ testLog2()
 
 <img src="../images/directLink.png" alt="directLink"/>
 
-### ParentGroup & ParentFlow
+## ParentGroup & ParentFlow
 
 If you don't need to join two nodes to one another but instead which to demonstrate the flow between `groups` or `flows`, you can pass either `parentGroup` or `parentFlow` as an optional parameter.
 
@@ -188,7 +188,7 @@ Name: **startLog**
 
 Parameters: see [startLog](#start-log) options
 
-#### Example
+### Example
 
 Here's an example:
 
@@ -223,9 +223,9 @@ testLog11()
 
 <img src="../images/parentgroup.png" alt="offSet"/>
 
-### Loops
+## Loops
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.logging**
 
@@ -233,17 +233,17 @@ Name: **startLog**
 
 Parameters:
 
-### Leaf
+## Leaf
 
 Sometimes it may be unnecessary to start a log, add nodes and close the log off again, especially if there are no further branches. In these cases, we can set the `leaf` parameter in a node to `true`, which will automatically create a `branch` of the given `node` then immediately `end` it.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
 Parameters: see [Node](nodes.md) options
 
-#### Example
+### Example
 
 Here's an example:
 
@@ -267,11 +267,11 @@ testLog()
 
 <img src="../images/leaf.png" alt="leaf"/>
 
-### clearFolder
+## clearFolder
 
 **FunkyWeave** logging has a built-in means for deleting any files within the `./data/flows` folder, which can be run `asynchronously` to ensure the folder is clear before any other script is run.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.logging**
 
@@ -281,7 +281,7 @@ Parameters:
 
 `No Parameters`
 
-#### Example
+### Example
 
 Here's an example:
 

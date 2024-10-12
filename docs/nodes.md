@@ -1,15 +1,15 @@
 
-## Nodes
+# Nodes
 
 Once a `log` is created the following `node styles` are available.
 
 Every time a node is created, **FunkyWeave** will also extract the `file name` and `function name` the log was used in, which you will see detailed within the `complete flow examples`.
 
-### Database
+## Database
 
 Should be used when directly interacting with a database or other data source.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -25,7 +25,7 @@ log.database(
 	Leaf
 )
 ```
-#### Example
+### Example
 
 Here's an example:
 
@@ -36,11 +36,11 @@ log.database('log a database step')
 
 <img src="../images/database.png" alt="database"/>
 
-### Decision
+## Decision
 
 A node that can be used when detailing any if statements.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -56,7 +56,7 @@ log.decision(
 	Leaf
 )
 ```
-#### Example
+### Example
 
 Here's an example:
 
@@ -67,11 +67,11 @@ log.decision('log a decision step')
 
 <img src="../images/decision.png" alt="decision"/>
 
-### Input
+## Input
 
 A node to show when data is taken into a flow.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -87,7 +87,7 @@ log.input(
 	Leaf
 )
 ```
-#### Example
+### Example
 
 Here's an example:
 
@@ -98,11 +98,11 @@ log.input('log a input step')
 
 <img src="../images/input.png" alt="input"/>
 
-### Output
+## Output
 
 A node to show when data is output from a flow.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -118,7 +118,7 @@ log.output(
 	Leaf
 )
 ```
-#### Example
+### Example
 
 Here's an example:
 
@@ -129,11 +129,11 @@ log.output('log a output step')
 
 <img src="../images/output.png" alt="output"/>
 
-### Process
+## Process
 
 A node that covers basic flow steps that aren't defined using any other type of node.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -149,7 +149,7 @@ log.process(
 	Leaf
 )
 ```
-#### Example
+### Example
 Here's an example:
 
 ```
@@ -159,11 +159,11 @@ log.process('log a process step')
 
 <img src="../images/process.png" alt="process"/>
 
-### End
+## End
 
 To end a flow and save it, create an `end` node. This will save the node to a `./data/flows` folder in the `root of your project`. To avoid duplicate files, `hashing` is used to generate filenames based on their content:
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.log**
 
@@ -178,7 +178,7 @@ log.end(
 	Leaf
 )
 ```
-#### Example
+### Example
 Here's an example:
 
 ```

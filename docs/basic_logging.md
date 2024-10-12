@@ -1,4 +1,4 @@
-## Basic Logging
+# Basic Logging
 
 Logging is broken down into a number of simple steps
 
@@ -11,11 +11,11 @@ Logging is broken down into a number of simple steps
 	* Process
 	* End
 
-### Start Log
+## Start Log
 
 To initialise **FunkyWeave** `logging`, there are 4 required field and a set of optional variables that can be passed into the start function.
 
-#### Function Definition
+### Function Definition
 
 Source: **funkyweave.logging**
 
@@ -49,7 +49,7 @@ const log = startLog(
 )
 ```
 
-#### Example
+### Example
 
 The below script is an example of how a user could initialise a `log instance` for use in a function:
 

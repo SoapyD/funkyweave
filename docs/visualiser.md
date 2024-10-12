@@ -1,8 +1,8 @@
-## Visualise
+# Visualise
 
 To render the files within the `./data/flow` folder, you need to use **FunkyWeave's** `visualiser` class.
 
-#### Function Definition
+## Function Definition
 
 Source: **funkyweave.visualiser**
 
@@ -36,7 +36,7 @@ const log = visualiser.run(
 )
 ```
 
-#### Example
+## Example
 
 Here's a complete example of how to generate a flow then visualise it:
 
