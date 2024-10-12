@@ -198,6 +198,9 @@ const Visualiser = class {
 					if (searchName in colours[itemName]) {
 						return colours[itemName][searchName]
 					}
+					if ('all' in colours[itemName]) {
+						return colours[itemName]['all']
+					}					
 				} else {
 					return colours[itemName]
 				}
