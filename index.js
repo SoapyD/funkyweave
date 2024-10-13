@@ -1,3 +1,3 @@
 
 exports.visualiser = require('./src/visualiser')
-exports.logger = require('./src/functionLogHandler')
+exports.logger = require('./src/logger')

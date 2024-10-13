@@ -34,3 +34,4 @@ For more information on how **FunkyWeave** works, please take a look at the foll
 * [Node Types](/docs/nodes.md)
 * [Advanced Logging](/docs/advanced_logging.md)
 * [Visualising Flows](/docs/visualiser.md)
+* [Troubleshooting](/docs/troubleshooting.md)
