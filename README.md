@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./images/funkyweave.png" alt="Logo" style="width:200px;"/>
+<img src="./images/funkyweave_logo.png" alt="Logo"/>
 </div>
 
 # FunkyWeave
