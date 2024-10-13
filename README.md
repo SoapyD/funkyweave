@@ -33,5 +33,6 @@ For more information on how **FunkyWeave** works, please take a look at the foll
 * [Basic Logging](/docs/basic_logging.md)
 * [Node Types](/docs/nodes.md)
 * [Advanced Logging](/docs/advanced_logging.md)
+* [Client-Side Logging](/docs/clientside_logging.md)
 * [Visualising Flows](/docs/visualiser.md)
 * [Troubleshooting](/docs/troubleshooting.md)

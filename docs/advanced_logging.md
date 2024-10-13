@@ -8,7 +8,7 @@ If the function you wish to detail is within the same Group, Flow, you pass the 
 
 ### Function Definition
 
-Source: **funkyweave.log**
+Source: **funkyweave.logging**
 
 Name: **startBranch**
 
@@ -252,7 +252,7 @@ The `filename` for the loop is taken from the `parent node` but can be manually 
 
 ### Function Definition
 
-Source: **funkyweave.log**
+Source: **funkyweave.logging**
 
 Name: **startLoop**
 
