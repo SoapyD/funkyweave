@@ -26,6 +26,10 @@ npm i funkyweave
 const { logger, visualiser } = require('funkyweave')
 ```
 
+## Updates
+
+* **v1.0.3** - updated cluster naming to automaticaly remove special characters if used in node naming. 
+
 ## Further Reading
 
 For more information on how **FunkyWeave** works, please take a look at the following documentation:
