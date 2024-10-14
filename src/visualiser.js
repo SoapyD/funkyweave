@@ -81,16 +81,16 @@ const Visualiser = class {
 			combinedLinks.push(uniqueLinks)
 
 			if (jsonData.parentFlow) {
-				const name = jsonData.parentFlow.replace(/\s+/g, '_')
-				const flowName = jsonData.flow.replace(/\s+/g, '_')				
+				const name = jsonData.parentFlow.replace(/[^a-zA-Z0-9]/g, '_')
+				const flowName = jsonData.flow.replace(/[^a-zA-Z0-9]/g, '_')				
 				const parentFlowJoin = `node_${name} -> node_${flowName} [color=black, arrowhead=normal]`
 				if (combinedFileLinks.indexOf(parentFlowJoin) === -1) {
 					combinedFileLinks.push(parentFlowJoin)
 				}
 			}
 			if (jsonData.parentGroup) {
-				const name = jsonData.parentGroup.replace(/\s+/g, '_')
-				const groupName = jsonData.group.replace(/\s+/g, '_')
+				const name = jsonData.parentGroup.replace(/[^a-zA-Z0-9]/g, '_')
+				const groupName = jsonData.group.replace(/[^a-zA-Z0-9]/g, '_')
 				const parentGroupJoin = `node_${name} -> node_${groupName} [color=black, arrowhead=normal]`
 				if (combinedFileLinks.indexOf(parentGroupJoin) === -1) {
 					combinedFileLinks.push(parentGroupJoin)
@@ -221,7 +221,7 @@ const Visualiser = class {
 		const colour = this.getColour('#F1D3CE', options.colours, 'function', options.name)
 
 		const text = `
-		subgraph cluster_${options.name.replace(/\s+/g, '_')} {
+		subgraph cluster_${options.name.replace(/[^a-zA-Z0-9]/g, '_')} {
 			style=filled
 			color="${colour}"
 			label="${options.name}"
@@ -239,7 +239,7 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#FBF6EA', options.colours, 'file', options.name)
-		const name = options.name.replace(/\s+/g, '_')
+		const name = options.name.replace(/[^a-zA-Z0-9]/g, '_')
 
 		const text = `
 		subgraph cluster_${name}  {
@@ -261,7 +261,7 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'source', options.name)
-		const name = options.name.replace(/\s+/g, '_')
+		const name = options.name.replace(/[^a-zA-Z0-9]/g, '_')
 
 		const text = `
 		subgraph cluster_${name}  {
@@ -283,7 +283,7 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#F6EACB', options.colours, 'flow', options.name)
-		const name = options.name.replace(/\s+/g, '_')
+		const name = options.name.replace(/[^a-zA-Z0-9]/g, '_')
 
 		const text = `
 		subgraph cluster_${name}  {
@@ -308,7 +308,7 @@ const Visualiser = class {
 		})
 
 		const colour = this.getColour('#BEA9DF', options.colours, 'group', options.name)
-		const name = options.name.replace(/\s+/g, '_')
+		const name = options.name.replace(/[^a-zA-Z0-9]/g, '_')
 
 		const text = `
 		subgraph cluster_${name} {
