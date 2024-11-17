@@ -28,7 +28,8 @@ const { logger, visualiser } = require('funkyweave')
 
 ## Updates
 
-* **v1.0.3** - updated cluster naming to automaticaly remove special characters if used in node naming. 
+* **v1.1.2** - added means of enabling and disabling logging using env var and/or function. 
+* **v1.0.3** - updated cluster naming to automaticaly remove special characters if used in node naming.
 
 ## Further Reading
 
