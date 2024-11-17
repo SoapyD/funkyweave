@@ -19,6 +19,9 @@ const Logger = class {
 	}
 
 	getHashedFilename = async(data, extension = 'txt') => {
+		if (!this.logHandler.logging_enabled) {
+			return ''
+		}
 		if (typeof window === 'undefined') {
 			// SERVER
 			// Create a SHA-256 hash
@@ -108,7 +111,10 @@ const Logger = class {
 		}
 	}
 
-	save = async() => {	
+	save = async() => {
+		if (!this.logHandler.logging_enabled) {
+			return
+		}			
 		if (typeof window === 'undefined') {
 			// SERVER
 			const data = this.logData
@@ -156,18 +162,24 @@ const Logger = class {
 }
 
 const FunctionLogHandler = class {
-	constructor (options) {
+	constructor () {
 		this.maxLineWidth = 10
 		this.hashes = []
+		this.logging_enabled = true
 		if (typeof window === 'undefined') {
-			this.stackDepth = 3
+			this.stackDepth = 4
+			this.logging_enabled = (process.env.FUNKY_LOGGING_ENABLED || 'true') === 'true';
 		} else {
-			this.stackDepth = 2
+			this.stackDepth = 3
 		}
 	}
 
 	setCallBack = (callBack) => {
 		this.callBack = callBack
+	}
+
+	setLogging = (is_enabled) => {
+		this.logging_enabled = is_enabled
 	}
 
 	clearFolder = async () => {
@@ -231,6 +243,9 @@ const FunctionLogHandler = class {
 	}
 
 	insertLineBreaks = (text) => {
+		if (!this.logging_enabled) {
+			return text
+		}
 		let result = ''
 		let currentLineLength = 0
 
@@ -248,39 +263,49 @@ const FunctionLogHandler = class {
 		return result
 	}
 
+	getNames = (options) => {
+
+		if (!this.logging_enabled) {
+			return '', ''
+		}	
+
+		let stackDepth = this.stackDepth
+			
+		if (options.stackDepth) {
+			stackDepth = options.stackDepth
+		}
+
+		let functionName = ''
+		let fileName = ''
+		if (typeof window === 'undefined') {
+			// SERVER
+			const error = new Error()
+			const stack = error.stack.split('\n')
+			const callerStackLine = stack[stackDepth].trim()
+			const regex = /^(.*)\s*\((.*)\)$/
+			const match = callerStackLine.match(regex)
+			functionName = match[1].split(' ')[1]
+			functionName = functionName.split('.')[functionName.split('.').length - 1]
+			fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
+		} else {
+			// CLIENT
+			const error = new Error()
+			const stack = error.stack.split('\n')
+			const callerStackLine = stack[stackDepth].trim()
+			fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
+			functionName = callerStackLine.split('@')[0]
+			functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
+		}
+
+		if (functionName === '<anonymous>') {
+			functionName = 'no_named_function'
+		}
+
+		return { functionName, fileName }
+	}
+
 	log = (logData, description, options, shapeName, processType) => {
 		try {
-			let stackDepth = this.stackDepth
-			
-			if (options.stackDepth) {
-				stackDepth = options.stackDepth
-			}
-
-			let functionName = ''
-			let fileName = ''
-			if (typeof window === 'undefined') {
-				// SERVER
-				const error = new Error()
-				const stack = error.stack.split('\n')
-				const callerStackLine = stack[stackDepth].trim()
-				const regex = /^(.*)\s*\((.*)\)$/
-				const match = callerStackLine.match(regex)
-				functionName = match[1].split(' ')[1]
-				functionName = functionName.split('.')[functionName.split('.').length - 1]
-				fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
-			} else {
-				// CLIENT
-				const error = new Error()
-				const stack = error.stack.split('\n')
-				const callerStackLine = stack[stackDepth].trim()
-				fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
-				functionName = callerStackLine.split('@')[0]
-				functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
-			}
-
-			if (functionName === '<anonymous>') {
-				functionName = 'no_named_function'
-			}
 
 			let data = {
 				group: '',
@@ -293,6 +318,8 @@ const FunctionLogHandler = class {
 				functionOverride: '',
 				history: []
 			}
+
+			let { functionName, fileName } = this.getNames(options)
 
 			if (Object.keys(logData).length > 0) {
 				data = logData
