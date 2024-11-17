@@ -168,7 +168,7 @@ const FunctionLogHandler = class {
 		this.logging_enabled = true
 		if (typeof window === 'undefined') {
 			this.stackDepth = 4
-			this.logging_enabled = process.env.FUNKY_LOGGING_ENABLED === 'true';
+			this.logging_enabled = (process.env.FUNKY_LOGGING_ENABLED || 'true') === 'true';
 		} else {
 			this.stackDepth = 3
 		}

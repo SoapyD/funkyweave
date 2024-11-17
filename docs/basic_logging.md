@@ -90,3 +90,13 @@ testLog()
 Which should produce a flow that looks like this:
 
 <img src="../images/simple_example.png" alt="simple_example"/>
+
+## Enable Logging
+
+Logging by default is enabled but can be toggled using the `FUNKY_LOGGING_ENABLED` environmental variable. To toggle logging off, use:
+
+```
+FUNKY_LOGGING_ENABLED=false
+```
+
+The above only works on server-script. You can use the function `setLogging` on the `logger` object to manually enable or disable logging. This method should be used `client-side`.
