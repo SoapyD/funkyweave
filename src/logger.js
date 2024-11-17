@@ -1,5 +1,4 @@
 let fs, path, crypto, directory;
-let LOGGING_ENABLED
 
 
 if (typeof window === 'undefined') {
@@ -11,8 +10,6 @@ if (typeof window === 'undefined') {
 	const rootDir = process.cwd();
 	directory = path.join(rootDir, 'data', 'flows')
 	fs.mkdirSync(directory, { recursive: true })
-
-	LOGGING_ENABLED = process.env.FUNKY_LOGGING_ENABLED === 'true'; // Convert to boolean
 }
 
 const Logger = class {
@@ -22,7 +19,7 @@ const Logger = class {
 	}
 
 	getHashedFilename = async(data, extension = 'txt') => {
-		if (!LOGGING_ENABLED) {
+		if (!this.logHandler.logging_enabled) {
 			return ''
 		}
 		if (typeof window === 'undefined') {
@@ -115,7 +112,7 @@ const Logger = class {
 	}
 
 	save = async() => {
-		if (!LOGGING_ENABLED) {
+		if (!this.logHandler.logging_enabled) {
 			return
 		}			
 		if (typeof window === 'undefined') {
@@ -165,18 +162,24 @@ const Logger = class {
 }
 
 const FunctionLogHandler = class {
-	constructor (options) {
+	constructor () {
 		this.maxLineWidth = 10
 		this.hashes = []
+		this.logging_enabled = true
 		if (typeof window === 'undefined') {
-			this.stackDepth = 3
+			this.stackDepth = 4
+			this.logging_enabled = process.env.FUNKY_LOGGING_ENABLED === 'true';
 		} else {
-			this.stackDepth = 2
+			this.stackDepth = 3
 		}
 	}
 
 	setCallBack = (callBack) => {
 		this.callBack = callBack
+	}
+
+	setLogging = (is_enabled) => {
+		this.logging_enabled = is_enabled
 	}
 
 	clearFolder = async () => {
@@ -240,7 +243,7 @@ const FunctionLogHandler = class {
 	}
 
 	insertLineBreaks = (text) => {
-		if (!LOGGING_ENABLED) {
+		if (!this.logging_enabled) {
 			return text
 		}
 		let result = ''
@@ -262,8 +265,8 @@ const FunctionLogHandler = class {
 
 	getNames = (options) => {
 
-		if (!LOGGING_ENABLED) {
-			return functionName, fileName
+		if (!this.logging_enabled) {
+			return '', ''
 		}	
 
 		let stackDepth = this.stackDepth
@@ -298,7 +301,7 @@ const FunctionLogHandler = class {
 			functionName = 'no_named_function'
 		}
 
-		return functionName, fileName
+		return { functionName, fileName }
 	}
 
 	log = (logData, description, options, shapeName, processType) => {
@@ -316,7 +319,7 @@ const FunctionLogHandler = class {
 				history: []
 			}
 
-			const { functionName, fileName } = this.getNames(options)
+			let { functionName, fileName } = this.getNames(options)
 
 			if (Object.keys(logData).length > 0) {
 				data = logData
