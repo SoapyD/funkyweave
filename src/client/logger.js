@@ -135,11 +135,13 @@ const Logger = class {
 			// Write the JSON data to the file
 			const filePath = path.join(directory, fileName)
 	
-			fs.writeFile(filePath, jsonData, 'utf8', (err) => {
-				if (err) {
-					console.error('Error writing file', err)
-				}
-			})
+			if (!fs.existsSync(filePath)) {
+				fs.writeFile(filePath, jsonData, 'utf8', (err) => {
+					if (err) {
+						console.error('Error writing file', err)
+					}
+				})
+			}
 		} else {
 			// CLIENT
 			const fileName = await this.getHashedFilename(JSON.stringify(this.logData), 'json')
@@ -265,43 +267,52 @@ const FunctionLogHandler = class {
 
 	getNames = (options) => {
 
-		if (!this.logging_enabled) {
-			return '', ''
-		}	
+		try{
 
-		let stackDepth = this.stackDepth
-			
-		if (options.stackDepth) {
-			stackDepth = options.stackDepth
+			if (!this.logging_enabled) {
+				return '', ''
+			}	
+	
+			let stackDepth = this.stackDepth
+				
+			if (options.stackDepth) {
+				stackDepth = options.stackDepth
+			}
+	
+			let functionName = 'no functionName'
+			let fileName = 'no fileName'
+			if (typeof window === 'undefined') {
+				// SERVER
+				const error = new Error()
+				const stack = error.stack.split('\n')
+				const callerStackLine = stack[stackDepth].trim()
+				const regex = /^(.*)\s*\((.*)\)$/
+				const match = callerStackLine.match(regex)
+				if(!match){
+					return { functionName, fileName }
+				}
+				functionName = match[1].split(' ')[1]
+				functionName = functionName.split('.')[functionName.split('.').length - 1]
+				fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
+			} else {
+				// CLIENT
+				const error = new Error()
+				const stack = error.stack.split('\n')
+				const callerStackLine = stack[stackDepth].trim()
+				fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
+				functionName = callerStackLine.split('@')[0]
+				functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
+			}
+	
+			if (functionName === '<anonymous>') {
+				functionName = 'no_named_function'
+			}
+	
+			return { functionName, fileName }
+		} catch (err) {
+			console.log("can't get function or filename")
+			return { functionName, fileName }
 		}
-
-		let functionName = ''
-		let fileName = ''
-		if (typeof window === 'undefined') {
-			// SERVER
-			const error = new Error()
-			const stack = error.stack.split('\n')
-			const callerStackLine = stack[stackDepth].trim()
-			const regex = /^(.*)\s*\((.*)\)$/
-			const match = callerStackLine.match(regex)
-			functionName = match[1].split(' ')[1]
-			functionName = functionName.split('.')[functionName.split('.').length - 1]
-			fileName = match[2].split('\\').pop().split(':')[0].split('.')[0]
-		} else {
-			// CLIENT
-			const error = new Error()
-			const stack = error.stack.split('\n')
-			const callerStackLine = stack[stackDepth].trim()
-			fileName = callerStackLine.match(/(\w+\.\w+)/)[0].split('.')[0]
-			functionName = callerStackLine.split('@')[0]
-			functionName = functionName.split('.')[functionName.split('.').length - 1].replace(/[^a-zA-Z0-9\s]/g, '')
-		}
-
-		if (functionName === '<anonymous>') {
-			functionName = 'no_named_function'
-		}
-
-		return { functionName, fileName }
 	}
 
 	log = (logData, description, options, shapeName, processType) => {
