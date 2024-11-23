@@ -68,39 +68,44 @@ const Visualiser = class {
 		const combinedFileLinks = []
 		const combinedParentLinks = []
 
-		// List all JSON files in the directory
-		const files = fs.readdirSync(flowsDirectory).filter(file => file.endsWith('.json'))
+		try{
 
-		// Load and combine JSON data
-		files.forEach(file => {
-			const filePath = path.join(flowsDirectory, file)
-			const rawData = fs.readFileSync(filePath)
-			const jsonData = JSON.parse(rawData)
-			combinedData.push(...jsonData.history)
-			const uniqueLinks = [...new Set(jsonData.history)]
-			combinedLinks.push(uniqueLinks)
-
-			if (jsonData.parentFlow) {
-				const name = jsonData.parentFlow.replace(/[^a-zA-Z0-9]/g, '_')
-				const flowName = jsonData.flow.replace(/[^a-zA-Z0-9]/g, '_')				
-				const parentFlowJoin = `node_${name} -> node_${flowName} [color=black, arrowhead=normal]`
-				if (combinedFileLinks.indexOf(parentFlowJoin) === -1) {
-					combinedFileLinks.push(parentFlowJoin)
+			// List all JSON files in the directory
+			const files = fs.readdirSync(flowsDirectory).filter(file => file.endsWith('.json'))
+	
+			// Load and combine JSON data
+			files.forEach(file => {
+				const filePath = path.join(flowsDirectory, file)
+				const rawData = fs.readFileSync(filePath)
+				const jsonData = JSON.parse(rawData)
+				combinedData.push(...jsonData.history)
+				const uniqueLinks = [...new Set(jsonData.history)]
+				combinedLinks.push(uniqueLinks)
+	
+				if (jsonData.parentFlow) {
+					const name = jsonData.parentFlow.replace(/[^a-zA-Z0-9]/g, '_')
+					const flowName = jsonData.flow.replace(/[^a-zA-Z0-9]/g, '_')				
+					const parentFlowJoin = `node_${name} -> node_${flowName} [color=black, arrowhead=normal]`
+					if (combinedFileLinks.indexOf(parentFlowJoin) === -1) {
+						combinedFileLinks.push(parentFlowJoin)
+					}
 				}
-			}
-			if (jsonData.parentGroup) {
-				const name = jsonData.parentGroup.replace(/[^a-zA-Z0-9]/g, '_')
-				const groupName = jsonData.group.replace(/[^a-zA-Z0-9]/g, '_')
-				const parentGroupJoin = `node_${name} -> node_${groupName} [color=black, arrowhead=normal]`
-				if (combinedFileLinks.indexOf(parentGroupJoin) === -1) {
-					combinedFileLinks.push(parentGroupJoin)
+				if (jsonData.parentGroup) {
+					const name = jsonData.parentGroup.replace(/[^a-zA-Z0-9]/g, '_')
+					const groupName = jsonData.group.replace(/[^a-zA-Z0-9]/g, '_')
+					const parentGroupJoin = `node_${name} -> node_${groupName} [color=black, arrowhead=normal]`
+					if (combinedFileLinks.indexOf(parentGroupJoin) === -1) {
+						combinedFileLinks.push(parentGroupJoin)
+					}
 				}
-			}
-			if (jsonData.parentLink) {
-				combinedParentLinks.push(jsonData.parentLink)
-			}
-		})
-
+				if (jsonData.parentLink) {
+					combinedParentLinks.push(jsonData.parentLink)
+				}
+			})
+	
+		} catch(err) {
+			console.log("unable to extract core json data")
+		}
 		const fileJoins = combinedFileLinks.join('\n')
 
 		return [combinedData, combinedLinks, combinedParentLinks, fileJoins]
